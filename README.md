@@ -88,9 +88,9 @@ NOTE: You MUST open a new Anaconda/Command Prompt for the changes in the environ
 ```
  
 
-**NOTE : For different operating systems,Installation steps are different.To check detailed installation guide for your system ,please  visit 
+**NOTE** : For different operating systems,Installation steps are different.To check detailed installation guidelines for your system ,please  refer 
  https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md
-**
+
 
 
 
