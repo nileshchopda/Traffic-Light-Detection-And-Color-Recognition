@@ -1,3 +1,11 @@
+
+##### Author - Nilesh Chopda
+
+##### Project - Traffic Light Detection and Color Recognition using Tensorflow Object Detection API
+
+
+### Import Important Libraries
+
 import numpy as np
 import os
 import six.moves.urllib as urllib
@@ -12,30 +20,38 @@ import time
 import cv2
 
 
-def detect_red(img, Threshold=0.01):
+### Function To Detect Red and Yellow Color
+# Here,we are detecting only Red and Yellow colors for the traffic lights as we need to stop the car when it detects these colors.
+
+def detect_red_and_yellow(img, Threshold=0.01):
     """
     detect red and yellow
     :param img:
     :param Threshold:
-    :return:q
+    :return:
     """
 
-    desired_dim = (30, 90) # width, height
+    desired_dim = (30, 90)  # width, height
     img = cv2.resize(np.array(img), desired_dim, interpolation=cv2.INTER_LINEAR)
-    img_hsv=cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+    img_hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
 
     # lower mask (0-10)
-    lower_red = np.array([0,70,50])
-    upper_red = np.array([10,255,255])
+    lower_red = np.array([0, 70, 50])
+    upper_red = np.array([10, 255, 255])
     mask0 = cv2.inRange(img_hsv, lower_red, upper_red)
 
     # upper mask (170-180)
-    lower_red = np.array([170,70,50])
-    upper_red = np.array([180,255,255])
-    mask1 = cv2.inRange(img_hsv, lower_red, upper_red)
+    lower_red1 = np.array([170, 70, 50])
+    upper_red1 = np.array([180, 255, 255])
+    mask1 = cv2.inRange(img_hsv, lower_red1, upper_red1)
+
+    # defining the Range of yellow color
+    lower_yellow = np.array([21, 39, 64])
+    upper_yellow = np.array([40, 255, 255])
+    mask2 = cv2.inRange(img_hsv, lower_yellow, upper_yellow)
 
     # red pixels' mask
-    mask = mask0+mask1
+    mask = mask0 + mask1 + mask2
 
     # Compare the percentage of red values
     rate = np.count_nonzero(mask) / (desired_dim[0] * desired_dim[1])
@@ -45,17 +61,23 @@ def detect_red(img, Threshold=0.01):
     else:
         return False
 
+
+
+### Loading Image Into Numpy Array
+
 def load_image_into_numpy_array(image):
     (im_width, im_height) = image.size
     return np.array(image.getdata()).reshape(
         (im_height, im_width, 3)).astype(np.uint8)
 
 
+### Read Traffic Light objects
+# Here,we will write a function to detect TL objects and crop this part of the image to recognize color inside the object. We will create a stop flag,which we will use to take the actions based on recognized color of the traffic light.
 
-
-def read_traffic_lights(image, boxes, scores, classes, max_boxes_to_draw=20, min_score_thresh=0.5, traffic_ligth_label=10):
+def read_traffic_lights_object(image, boxes, scores, classes, max_boxes_to_draw=20, min_score_thresh=0.5,
+                               traffic_ligth_label=10):
     im_width, im_height = image.size
-    red_flag = False
+    stop_flag = False
     for i in range(min(max_boxes_to_draw, boxes.shape[0])):
         if scores[i] > min_score_thresh and classes[i] == traffic_ligth_label:
             ymin, xmin, ymax, xmax = tuple(boxes[i].tolist())
@@ -63,25 +85,26 @@ def read_traffic_lights(image, boxes, scores, classes, max_boxes_to_draw=20, min
                                           ymin * im_height, ymax * im_height)
             crop_img = image.crop((left, top, right, bottom))
 
-            if detect_red(crop_img):
-                red_flag = True
+            if detect_red_and_yellow(crop_img):
+                stop_flag = True
 
-    return red_flag
+    return stop_flag
 
+
+### Function to Plot detected image
 
 def plot_origin_image(image_np, boxes, classes, scores, category_index):
-
     # Size of the output images.
     IMAGE_SIZE = (12, 8)
     vis_util.visualize_boxes_and_labels_on_image_array(
-      image_np,
-      np.squeeze(boxes),
-      np.squeeze(classes).astype(np.int32),
-      np.squeeze(scores),
-      category_index,
-      min_score_thresh=.5,
-      use_normalized_coordinates=True,
-      line_thickness=5)
+        image_np,
+        np.squeeze(boxes),
+        np.squeeze(classes).astype(np.int32),
+        np.squeeze(scores),
+        category_index,
+        min_score_thresh=.5,
+        use_normalized_coordinates=True,
+        line_thickness=3)
     plt.figure(figsize=IMAGE_SIZE)
     plt.imshow(image_np)
 
@@ -89,6 +112,8 @@ def plot_origin_image(image_np, boxes, classes, scores, category_index):
     # plt.savefig( 'output_images/ouput_' + str(idx) +'.png')
     plt.show()
 
+
+### Function to Detect Traffic Lights and to Recognize Color
 
 def detect_traffic_lights(PATH_TO_TEST_IMAGES_DIR, MODEL_NAME, Num_images, plot_flag=False):
     """
@@ -135,7 +160,7 @@ def detect_traffic_lights(PATH_TO_TEST_IMAGES_DIR, MODEL_NAME, Num_images, plot_
             od_graph_def.ParseFromString(serialized_graph)
             tf.import_graph_def(od_graph_def, name='')
 
-    # ----------Loading label map
+    # ---------Loading label map
     label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
     categories = label_map_util.convert_label_map_to_categories(label_map,
                                                                 max_num_classes=NUM_CLASSES,
@@ -167,16 +192,16 @@ def detect_traffic_lights(PATH_TO_TEST_IMAGES_DIR, MODEL_NAME, Num_images, plot_
                     [detection_boxes, detection_scores, detection_classes, num_detections],
                     feed_dict={image_tensor: image_np_expanded})
 
-                red_flag = read_traffic_lights(image, np.squeeze(boxes), np.squeeze(scores),
-                                               np.squeeze(classes).astype(np.int32))
-                if red_flag:
+                stop_flag = read_traffic_lights_object(image, np.squeeze(boxes), np.squeeze(scores),
+                                                       np.squeeze(classes).astype(np.int32))
+                if stop_flag:
                     # print('{}: stop'.format(image_path))  # red or yellow
                     commands.append(False)
-                    cv2.putText(image_np, 'Stop', (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 0, 0), 3)
+                    cv2.putText(image_np, 'Stop', (15, 25), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 1)
                 else:
                     # print('{}: go'.format(image_path))
                     commands.append(True)
-                    cv2.putText(image_np, 'Go', (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 3, (0, 255, 0), 3)
+                    cv2.putText(image_np, 'Go', (15, 25), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 1)
 
                 # Visualization of the results of a detection.
                 if plot_flag:
@@ -184,12 +209,24 @@ def detect_traffic_lights(PATH_TO_TEST_IMAGES_DIR, MODEL_NAME, Num_images, plot_
 
     return commands
 
+
+### Let's detect Traffic lights in test_images directory
+
 if __name__ == "__main__":
+    # Specify number of images to detect
+    Num_images = 17
 
-
-    Num_images = 10
+    # Specify test directory path
     PATH_TO_TEST_IMAGES_DIR = './test_images'
-    MODEL_NAME = 'faster_rcnn_resnet101_coco_11_06_2017'
+
+    # Specify downloaded model name
+    # MODEL_NAME ='ssd_mobilenet_v1_coco_11_06_2017'    # for faster detection but low accuracy
+    MODEL_NAME = 'faster_rcnn_resnet101_coco_11_06_2017'  # for improved accuracy
 
     commands = detect_traffic_lights(PATH_TO_TEST_IMAGES_DIR, MODEL_NAME, Num_images, plot_flag=True)
-    print(commands)
+    print(commands)  # commands to print action type, for 'Go' this will return True and for 'Stop' this will return False
+
+
+
+
+
