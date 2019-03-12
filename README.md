@@ -47,10 +47,7 @@ pip install --user matplotlib
 ### COCO API installation
 Download the [cocoapi](https://github.com/cocodataset/cocoapi) and copy the pycocotools subfolder to the tensorflow/models/research directory if you are interested in using COCO evaluation metrics. The default metrics are based on those used in Pascal VOC evaluation. To use the COCO object detection metrics add metrics_set: "coco_detection_metrics" to the eval_config message in the config file. To use the COCO instance segmentation metrics add metrics_set: "coco_mask_metrics" to the eval_config message in the config file.
 ```
-git clone https://github.com/cocodataset/cocoapi.git
-cd cocoapi/PythonAPI
-make
-cp -r pycocotools <path_to_tensorflow>/models/research/
+pip install git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI
 ```
 
 ### Protobuf Installation/Compilation
@@ -71,5 +68,19 @@ Add C:\Program Files\Google Protobuf\bin to your Path environment variable
 In a new Anaconda/Command Prompt, cd into TensorFlow/models/research/ directory and run the following command:
 ```
 # From within TensorFlow/models/research/
-Get-ChildItem object_detection/protos/*.proto | foreach {protoc "object_detection/protos/$($_.Name)" --python_out=.}
+for /f %i in ('dir /b object_detection\protos\*.proto') do protoc object_detection\protos\%i --python_out=.
 ```
+NOTE: You MUST open a new Anaconda/Command Prompt for the changes in the environment variables to take effect.
+
+### Adding necessary Environment Variables
+ -As Tensorflow\models\research\object_detection is the core package for object detection, it’s convenient to add the specific folder to our environmental variables.
+ ```
+ The following folder must be added to your PYTHONPATH environment variable (Environment Setup):
+
+<PATH_TO_TF>\TensorFlow\models\research\object_detection
+```
+ 
+ NOTE: For different operating systems,Installation steps are different.To check detailed installation guide for your system ,please  visit 
+ https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md
+ 
+
