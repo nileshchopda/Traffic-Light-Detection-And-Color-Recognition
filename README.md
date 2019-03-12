@@ -19,18 +19,18 @@ Once the object is detected in the image frame ,it then crops image and extracts
 ## Installation
 Before starting with the experiment,lets understand dependancies which we need to take care of before installing Tensorflow Object Detection API.Tensorflow Object Detection API depends on the following libraries:
 ```
-*python3
-*Protobuf 3.0.0
-*Python-tk
-*Pillow 1.0
-*lxml
-*tf Slim (which is included in the "tensorflow/models/research/" checkout)
-*Jupyter notebook
-*Matplotlib
-*Tensorflow (>=1.12.0)
-*Cython
-*contextlib2
-*cocoapi
+python3
+Protobuf 3.0.0
+Python-tk
+Pillow 1.0
+lxml
+tf Slim (which is included in the "tensorflow/models/research/" checkout)
+Jupyter notebook
+Matplotlib
+Tensorflow (>=1.12.0)
+Cython
+contextlib2
+cocoapi
 ```
 
 A typical user can install Tensorflow using one of the following commands depending on hardware configuration:
