@@ -51,7 +51,7 @@ pip install --user matplotlib
 ```
 
 ### COCO API installation
-Download the [cocoapi](https://github.com/cocodataset/cocoapi) and copy the pycocotools subfolder to the tensorflow/models/research directory if you are interested in using COCO evaluation metrics. The default metrics are based on those used in Pascal VOC evaluation. To use the COCO object detection metrics add metrics_set: "coco_detection_metrics" to the eval_config message in the config file. To use the COCO instance segmentation metrics add metrics_set: "coco_mask_metrics" to the eval_config message in the config file.
+Download the [cocoapi](https://github.com/cocodataset/cocoapi) and install it using pip command mentioned below:
 ```
 pip install git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI
 ```
