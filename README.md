@@ -334,7 +334,9 @@ if __name__ == "__main__":
 
 <img src="output_images\Figure_2.png">
     
+<img src="output_images\Figure_5.png">
 
+<img src="output_images\Figure_7.png">
 
 
 
