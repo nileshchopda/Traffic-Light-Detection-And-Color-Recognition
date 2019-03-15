@@ -339,6 +339,25 @@ if __name__ == "__main__":
 <img src="output_images\Figure_7.png" >
 
 
+## Training Custom Objects
 
+As Traffic Light is one of the classes trained using Tensorflow Object Detection API and Micosoft's COCO dataset ,we have skipped the process of training custom models.But If you want to train and detect custom objects, you can refer following tutorials on training your custom object detection classifier :
+
+https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/running_pets.md
+
+
+## Limitations
+
+This project was an attempt to perform object detection and color recognition on COCO dataset. The resulting model can be run directly on small devices like **Raspberry Pi** using TensorFlow Lite format.
+To perform real time object detection on live video stream,the machine must be equipped with hardware capable to perform high computations quickly.This can be achived using high end Graphical Processing Unit which have multiple cores to perform parallel processing for object detection.   
+
+
+## Future Study
+
+The broad objective of Object detection system is to make autonomous vehicles interpret surrounding environment and take actions better than humans.Self-driving cars are rapidly evolving as we see unimaginable innovation in hardware, software, and computing capabilities.But, cars have to perform object detection in real-time in order to detect objects approaching quickly and avoid them. There must be a very low latency time for high accuracy, meaning that very high computing and graphical power is needed. We’ll need to improve the power of our processor units in order to implement computer vision safely for autonomous vehicles.
+
+However, we also need a very accurate model upwards of 99.9%, since any mistakes made can be disastrous and cost human lives. Our current models have not achieved such high accuracies yet and we must generate more data to train on or design even better models. There are other better models for object detection like Faster-RCNNs but are still far from the accuracy we need. If we can improve object detection greatly, we’ll be one step closer to self-driving cars, and a safer and more convenient future.
+
+Hope you enjoyed the read!
 
 
