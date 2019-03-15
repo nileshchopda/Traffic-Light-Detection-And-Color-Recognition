@@ -332,9 +332,7 @@ if __name__ == "__main__":
     
 ## Results
 
-```
-<img src="output_images\Figure_2.png" alt="Go"/>
-```
+<img src="output_images\Figure_2.png">
     
 
 
