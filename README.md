@@ -332,11 +332,11 @@ if __name__ == "__main__":
     
 ## Results
 
-<img src="output_images\Figure_2.png" width="250">
+<img src="output_images\Figure_2.png" width="1250">
     
-<img src="output_images\Figure_5.png" width="250">
+<img src="output_images\Figure_5.png" width="1250">
 
-<img src="output_images\Figure_7.png" width="250">
+<img src="output_images\Figure_7.png" width="1250">
 
 
 
