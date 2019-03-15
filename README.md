@@ -327,11 +327,15 @@ if __name__ == "__main__":
 
     commands = detect_traffic_lights(PATH_TO_TEST_IMAGES_DIR, MODEL_NAME, Num_images, plot_flag=True)
     print(commands)  # commands to print action type, for 'Go' this will return True and for 'Stop' this will return False
-    ```
+
+```
     
-    ## Results
+## Results
+
+<img src="C:\Users\niles\Downloads\traffic-light-detector-master\output_images\Figure_2.png" alt="Go"/>
+
     
-    
+
 
 
 
