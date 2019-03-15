@@ -8,7 +8,7 @@ Humans can easily detect and identify objects present in an image frame. The hum
 With the advancements in technology, there has been a rapid increase in the development of autonomous vehicles and smart cars. Accurate detection and recognition of traffic lights is a crucial part in the development of such cars. The concept involves enabling autonomous vehicles to automatically detect traffic lights using the least amount of human interaction. Automating the process of traffic light detection in cars would also help to reduce accidents as machines do better jobs than humans.
 
 
-## Implementation Strategy
+## Working Strategy
 The experiment was implemented using transfer learning of the Microsoft's Common Objects in Context (COCO) pre-trained models and Tensorflow's Object Detection API.The COCO dataset contains images of **90 classes** ranging from bird to baseball bat. The first 14 classes are all related to transportation, including bicycle, car, and bus, etc. The ID for traffic light is 10.For the classes included in COCO dataset, please see **'mscoco_label_map.pbtxt'.**
 
 TensorFlow’s Object Detection API is a powerful tool that makes it easy to construct, train, and deploy object detection models. In most of the cases, training an entire convolutional network from scratch is time consuming and requires large datasets. This problem can be solved by using the advantage of transfer learning with a pre-trained model using the TensorFlow API.They have released different versions detection models trained on MS COCO dataset,from which,I have selected 2 models to test my experiment.The selection of these models is based on mAP,**mean Average Precision**,which indicates how well the model performed on the COCO dataset.Generally models that take longer to compute perform better.
@@ -94,5 +94,79 @@ NOTE: You MUST open a new Anaconda/Command Prompt for the changes in the environ
  https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md
 
 
+## Implementation of Code
+Before starting the actual working of Code,we need to import important libraries:
 
+
+#### Import Important Libraries
+
+```
+import numpy as np
+import os
+import six.moves.urllib as urllib
+import tarfile
+import tensorflow as tf
+from matplotlib import pyplot as plt
+from PIL import Image
+from os import path
+from utils import label_map_util
+from utils import visualization_utils as vis_util
+import time
+import cv2
+```
+
+
+#### Function to detect Red and Yellow Color
+To Detect color from the detected traffic light object frame will need frame to be in masked form.So we will convert and mask image with Red and Yellow color masks.Here we will let machine to take 'Stop' action once it detect area of detected Red or Yellow color is more than threshold set,otherwise the default action taken is 'Go' for which we need not detect Green color. So,let's write a function to detect Red and Yellow color from image : 
+```
+def detect_red_and_yellow(img, Threshold=0.01):
+    """
+    detect red and yellow
+    :param img:
+    :param Threshold:
+    :return:
+    """
+
+    desired_dim = (30, 90)  # width, height
+    img = cv2.resize(np.array(img), desired_dim, interpolation=cv2.INTER_LINEAR)
+    img_hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+
+    # lower mask (0-10)
+    lower_red = np.array([0, 70, 50])
+    upper_red = np.array([10, 255, 255])
+    mask0 = cv2.inRange(img_hsv, lower_red, upper_red)
+
+    # upper mask (170-180)
+    lower_red1 = np.array([170, 70, 50])
+    upper_red1 = np.array([180, 255, 255])
+    mask1 = cv2.inRange(img_hsv, lower_red1, upper_red1)
+
+    # defining the Range of yellow color
+    lower_yellow = np.array([21, 39, 64])
+    upper_yellow = np.array([40, 255, 255])
+    mask2 = cv2.inRange(img_hsv, lower_yellow, upper_yellow)
+
+    # red pixels' mask
+    mask = mask0 + mask1 + mask2
+
+    # Compare the percentage of red values
+    rate = np.count_nonzero(mask) / (desired_dim[0] * desired_dim[1])
+
+    if rate > Threshold:
+        return True
+    else:
+        return False
+        
+```
+
+#### Function to load image into Numpy Array
+For processing image frames it needs to be in form which machines can understand easily.So we will convert image frame into numpy array and further use it process and detect traffic lights.Function to convert image into numpy array is:
+```
+
+def load_image_into_numpy_array(image):
+    (im_width, im_height) = image.size
+    return np.array(image.getdata()).reshape(
+        (im_height, im_width, 3)).astype(np.uint8)
+        
+```
 
