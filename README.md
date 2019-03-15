@@ -332,8 +332,9 @@ if __name__ == "__main__":
     
 ## Results
 
+```
 <img src="C:\Users\niles\Downloads\traffic-light-detector-master\output_images\Figure_2.png" alt="Go"/>
-
+```
     
 
 
