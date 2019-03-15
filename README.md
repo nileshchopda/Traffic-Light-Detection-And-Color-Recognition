@@ -159,14 +159,181 @@ def detect_red_and_yellow(img, Threshold=0.01):
         
 ```
 
-#### Function to load image into Numpy Array
+#### Function to Load Image into Numpy Array
 For processing image frames it needs to be in form which machines can understand easily.So we will convert image frame into numpy array and further use it process and detect traffic lights.Function to convert image into numpy array is:
 ```
-
 def load_image_into_numpy_array(image):
     (im_width, im_height) = image.size
     return np.array(image.getdata()).reshape(
         (im_height, im_width, 3)).astype(np.uint8)
-        
 ```
+
+#### Function to Read Traffic Light Objects
+
+Here,we will write a function to detect Traffic Light objects and crop object box of the image to recognize color inside the object. We will create a stop flag,which it will use to take the actions based on recognized color of the traffic light.This flag will be True for Red and Yellow colors and False otherwise.Function to read traffic light objects is:
+```
+def read_traffic_lights_object(image, boxes, scores, classes, max_boxes_to_draw=20, min_score_thresh=0.5,
+                               traffic_ligth_label=10):
+    im_width, im_height = image.size
+    stop_flag = False
+    for i in range(min(max_boxes_to_draw, boxes.shape[0])):
+        if scores[i] > min_score_thresh and classes[i] == traffic_ligth_label:
+            ymin, xmin, ymax, xmax = tuple(boxes[i].tolist())
+            (left, right, top, bottom) = (xmin * im_width, xmax * im_width,
+                                          ymin * im_height, ymax * im_height)
+            crop_img = image.crop((left, top, right, bottom))
+
+            if detect_red_and_yellow(crop_img):
+                stop_flag = True
+
+    return stop_flag
+```
+
+#### Function to Plot Detected Image
+To visualize the results ,we will plot original image along with detected object boxes,scores and actions to take .Function to plot detected image is:
+```
+def plot_origin_image(image_np, boxes, classes, scores, category_index):
+    # Size of the output images.
+    IMAGE_SIZE = (12, 8)
+    vis_util.visualize_boxes_and_labels_on_image_array(
+        image_np,
+        np.squeeze(boxes),
+        np.squeeze(classes).astype(np.int32),
+        np.squeeze(scores),
+        category_index,
+        min_score_thresh=.5,
+        use_normalized_coordinates=True,
+        line_thickness=3)
+    plt.figure(figsize=IMAGE_SIZE)
+    plt.imshow(image_np)
+
+    # save augmented images into hard drive
+    # plt.savefig( 'output_images/ouput_' + str(idx) +'.png')
+    plt.show()
+```
+
+#### Function to Detect Traffic Lights and to Recognize Color
+To detect traffic lights and draw bounding boxes around the traffic lights,we need to specify directory paths for test images,model to be used,frozen detection graph file,lapbel map etc.This function will detect traffic lights and draw bounding boxes around them.It will also print Stop or Go based on values of stop_flag.If detected,it will change commands flag to true.
+```
+def detect_traffic_lights(PATH_TO_TEST_IMAGES_DIR, MODEL_NAME, Num_images, plot_flag=False):
+    """
+    Detect traffic lights and draw bounding boxes around the traffic lights
+    :param PATH_TO_TEST_IMAGES_DIR: testing image directory
+    :param MODEL_NAME: name of the model used in the task
+    :return: commands: True: go, False: stop
+    """
+
+    # --------test images------
+    TEST_IMAGE_PATHS = [os.path.join(PATH_TO_TEST_IMAGES_DIR, 'img_{}.jpg'.format(i)) for i in range(1, Num_images + 1)]
+
+    commands = []
+
+    # What model to download
+    MODEL_FILE = MODEL_NAME + '.tar.gz'
+    DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
+
+    # Path to frozen detection graph. This is the actual model that is used for the object detection.
+    PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
+
+    # List of the strings that is used to add correct label for each box.
+    PATH_TO_LABELS = 'mscoco_label_map.pbtxt'
+
+    # number of classes for COCO dataset
+    NUM_CLASSES = 90
+
+    # --------Download model----------
+    if path.isdir(MODEL_NAME) is False:
+        opener = urllib.request.URLopener()
+        opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
+        tar_file = tarfile.open(MODEL_FILE)
+        for file in tar_file.getmembers():
+            file_name = os.path.basename(file.name)
+            if 'frozen_inference_graph.pb' in file_name:
+                tar_file.extract(file, os.getcwd())
+
+    # --------Load a (frozen) Tensorflow model into memory
+    detection_graph = tf.Graph()
+    with detection_graph.as_default():
+        od_graph_def = tf.GraphDef()
+        with tf.gfile.GFile(PATH_TO_CKPT, 'rb') as fid:
+            serialized_graph = fid.read()
+            od_graph_def.ParseFromString(serialized_graph)
+            tf.import_graph_def(od_graph_def, name='')
+
+    # ---------Loading label map
+    label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
+    categories = label_map_util.convert_label_map_to_categories(label_map,
+                                                                max_num_classes=NUM_CLASSES,
+                                                                use_display_name=True)
+    category_index = label_map_util.create_category_index(categories)
+
+    with detection_graph.as_default():
+        with tf.Session(graph=detection_graph) as sess:
+            # Definite input and output Tensors for detection_graph
+            image_tensor = detection_graph.get_tensor_by_name('image_tensor:0')
+            # Each box represents a part of the image where a particular object was detected.
+            detection_boxes = detection_graph.get_tensor_by_name('detection_boxes:0')
+            # Each score represent how level of confidence for each of the objects.
+            # Score is shown on the result image, together with the class label.
+            detection_scores = detection_graph.get_tensor_by_name('detection_scores:0')
+            detection_classes = detection_graph.get_tensor_by_name('detection_classes:0')
+            num_detections = detection_graph.get_tensor_by_name('num_detections:0')
+
+            for image_path in TEST_IMAGE_PATHS:
+                image = Image.open(image_path)
+
+                # the array based representation of the image will be used later in order to prepare the
+                # result image with boxes and labels on it.
+                image_np = load_image_into_numpy_array(image)
+                # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
+                image_np_expanded = np.expand_dims(image_np, axis=0)
+                # Actual detection.
+                (boxes, scores, classes, num) = sess.run(
+                    [detection_boxes, detection_scores, detection_classes, num_detections],
+                    feed_dict={image_tensor: image_np_expanded})
+
+                stop_flag = read_traffic_lights_object(image, np.squeeze(boxes), np.squeeze(scores),
+                                                       np.squeeze(classes).astype(np.int32))
+                if stop_flag:
+                    # print('{}: stop'.format(image_path))  # red or yellow
+                    commands.append(False)
+                    cv2.putText(image_np, 'Stop', (15, 25), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 1)
+                else:
+                    # print('{}: go'.format(image_path))
+                    commands.append(True)
+                    cv2.putText(image_np, 'Go', (15, 25), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 1)
+
+                # Visualization of the results of a detection.
+                if plot_flag:
+                    plot_origin_image(image_np, boxes, classes, scores, category_index)
+
+    return commands
+```
+
+#### Detect Traffic Lights in test_images directory
+
+To detect traffic lights specify Number of images,test images directory path and Model name.Here we used "faster_rcnn_resnet101_coco_11_06_2017" model. See the [detection model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md) for a list of other models that can be run out-of-the-box with varying speeds and accuracies.You can download and choose models based on your requirements.Lets Detect Traffic Lights in test_images directory : 
+```
+if __name__ == "__main__":
+    # Specify number of images to detect
+    Num_images = 5
+
+    # Specify test directory path
+    PATH_TO_TEST_IMAGES_DIR = './test_images'
+
+    # Specify downloaded model name
+    # MODEL_NAME ='ssd_mobilenet_v1_coco_11_06_2017'    # for faster detection but low accuracy
+    MODEL_NAME = 'faster_rcnn_resnet101_coco_11_06_2017'  # for improved accuracy
+
+    commands = detect_traffic_lights(PATH_TO_TEST_IMAGES_DIR, MODEL_NAME, Num_images, plot_flag=True)
+    print(commands)  # commands to print action type, for 'Go' this will return True and for 'Stop' this will return False
+    ```
+    
+    ## Results
+    
+    
+
+
+
+
 
