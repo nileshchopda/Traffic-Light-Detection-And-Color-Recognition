@@ -340,8 +340,7 @@ if __name__ == "__main__":
 
 ## Simulation Result
 
-[![Alt text](https://youtu.be/tHjDgAakQMM?t=9)](https://www.youtube.com/watch?v=tHjDgAakQMM
-)
+<iframe width="455" height="360" src="https://www.youtube.com/embed/tHjDgAakQMM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Training Custom Objects
 
@@ -377,8 +376,9 @@ o	This type of projects can be useful in efficient traffic management. Here is a
 ▪	https://github.com/nileshchopda/Traffic-Light-Detection-And-Color-Recognition
 ▪	https://www.pyimagesearch.com/2018/05/14/a-gentle-guide-to-deep-learning-object-detection/
 ▪	https://software.intel.com/en-us/articles/traffic-light-detection-using-the-tensorflow-object-detection-api
-▪	https://medium.com/comet-app/review-of-deep-learning-algorithms-for-object-detection-c1f3d437b852
-▪	https://towardsdatascience.com/evolution-of-object-detection-and-localization-algorithms-e241021d8bad
+▪	https://medium.com/comet-app/review-of-deep-learning-algorithms-for-object-  detection-c1f3d437b852
+▪	https://towardsdatascience.com/evolution-of-object-detection-and-localization-  algorithms-e241021d8bad
+
 
 Hope you enjoyed the read!
 
