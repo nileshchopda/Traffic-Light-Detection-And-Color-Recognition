@@ -340,7 +340,7 @@ if __name__ == "__main__":
 
 ## Simulation Result
 
-<iframe width="455" height="360" src="https://www.youtube.com/embed/tHjDgAakQMM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<img src="final_5ca5a1cb87e4f90013e225e5_555664.gif">
 
 ## Training Custom Objects
 
@@ -370,6 +370,8 @@ o	This can be used to detect multiple objects from image frame and perform analy
 o	Analysis includes number of detected objects and their bounding boxes.
 o	This type of projects can be useful in efficient traffic management. Here is an example showing object detection of multiple objects and their analysis.
 
+
+<img src="final_5ca5a26f8f0f530014d040c8_74490.gif">
 
 ## References
 
