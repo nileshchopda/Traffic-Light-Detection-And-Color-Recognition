@@ -379,6 +379,7 @@ https://medium.com/comet-app/review-of-deep-learning-algorithms-for-object-detec
 https://towardsdatascience.com/evolution-of-object-detection-and-localization-algorithms-e241021d8bad
 
 
+
 Hope you enjoyed the read!
 
 
