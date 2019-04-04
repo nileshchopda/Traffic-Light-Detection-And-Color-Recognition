@@ -338,6 +338,10 @@ if __name__ == "__main__":
 
 <img src="output_images\Figure_7.png" >
 
+## Simulation Result
+
+[![Alt text](https://youtu.be/tHjDgAakQMM?t=9)](https://www.youtube.com/watch?v=tHjDgAakQMM
+)
 
 ## Training Custom Objects
 
@@ -357,6 +361,24 @@ To perform real time object detection on live video stream,the machine must be e
 The broad objective of Object detection system is to make autonomous vehicles interpret surrounding environment and take actions better than humans.Self-driving cars are rapidly evolving as we see unimaginable innovation in hardware, software, and computing capabilities.But, cars have to perform object detection in real-time in order to detect objects approaching quickly and avoid them. There must be a very low latency time for high accuracy, meaning that very high computing and graphical power is needed. We’ll need to improve the power of our processor units in order to implement computer vision safely for autonomous vehicles.
 
 However, we also need a very accurate model upwards of 99.9%, since any mistakes made can be disastrous and cost human lives. Our current models have not achieved such high accuracies yet and we must generate more data to train on or design even better models. There are other better models for object detection like Faster-RCNNs but are still far from the accuracy we need. If we can improve object detection greatly, we’ll be one step closer to self-driving cars, and a safer and more convenient future.
+
+
+## Expansion of Project
+
+Object detection classifiers can work on multiple objects and thus I have expanded scope of project to traffic surveillance and video analysis:  
+o	Models trained on COCO dataset have facility of detecting ~90 classes.
+o	This can be used to detect multiple objects from image frame and perform analysis of objects detected.
+o	Analysis includes number of detected objects and their bounding boxes.
+o	This type of projects can be useful in efficient traffic management. Here is an example showing object detection of multiple objects and their analysis.
+
+
+## References
+
+▪	https://github.com/nileshchopda/Traffic-Light-Detection-And-Color-Recognition
+▪	https://www.pyimagesearch.com/2018/05/14/a-gentle-guide-to-deep-learning-object-detection/
+▪	https://software.intel.com/en-us/articles/traffic-light-detection-using-the-tensorflow-object-detection-api
+▪	https://medium.com/comet-app/review-of-deep-learning-algorithms-for-object-detection-c1f3d437b852
+▪	https://towardsdatascience.com/evolution-of-object-detection-and-localization-algorithms-e241021d8bad
 
 Hope you enjoyed the read!
 
