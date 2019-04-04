@@ -365,10 +365,7 @@ However, we also need a very accurate model upwards of 99.9%, since any mistakes
 ## Expansion of Project
 
 Object detection classifiers can work on multiple objects and thus I have expanded scope of project to traffic surveillance and video analysis:  
-o	Models trained on COCO dataset have facility of detecting ~90 classes.
-o	This can be used to detect multiple objects from image frame and perform analysis of objects detected.
-o	Analysis includes number of detected objects and their bounding boxes.
-o	This type of projects can be useful in efficient traffic management. Here is an example showing object detection of multiple objects and their analysis.
+Models trained on COCO dataset have facility of detecting ~90 classes.This can be used to detect multiple objects from image frame and perform analysis on objects detected.Analysis includes number of detected objects and their bounding boxes.This type of projects can be useful in efficient traffic management.Here is an example showing object detection of multiple objects and their analysis.
 
 
 <img src="final_5ca5a26f8f0f530014d040c8_74490.gif">
