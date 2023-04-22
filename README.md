@@ -382,4 +382,7 @@ https://towardsdatascience.com/evolution-of-object-detection-and-localization-al
 
 Hope you enjoyed the read!
 
+## License
+
+[MIT License](LICENSE)
 
